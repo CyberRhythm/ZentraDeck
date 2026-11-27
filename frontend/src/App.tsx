@@ -383,7 +383,10 @@ export default function App() {
   const [busyAction, setBusyAction] = useState<string | null>(null);
 
   const [cmdInput, setCmdInput] = useState('');
-  const [cmdRunning, setCmdRunning] = useState(false);
+  // Server IDs with a quick command in flight. A single global flag made the
+  // Stop button cancel whatever server was being VIEWED, not the one actually
+  // running, and 'terminal:done' from any server cleared the state for all.
+  const [cmdRunningIds, setCmdRunningIds] = useState<string[]>([]);
   const [terminalMap, setTerminalMap] = useState<Record<string, TerminalEntry[]>>({});
   const [termCat, setTermCat] = useState<TermCategory>('system');
   const [procSort, setProcSort] = useState<{ key: ProcSortKey; dir: 'asc' | 'desc' }>({
@@ -418,6 +421,7 @@ export default function App() {
   const currentMetrics = selectedServer ? metricsMap[selectedServer.id] : undefined;
   const currentHistory = selectedServer ? historyMap[selectedServer.id] || [] : [];
   const currentTerminal = selectedServer ? terminalMap[selectedServer.id] || [] : [];
+  const cmdRunningHere = !!selectedServer && cmdRunningIds.includes(selectedServer.id);
 
   const pushToast = useCallback((type: ToastItem['type'], text: string) => {
     const id = `${Date.now()}-${Math.random()}`;
@@ -507,7 +511,7 @@ export default function App() {
           ),
         };
       });
-      setCmdRunning(false);
+      setCmdRunningIds((prev) => prev.filter((id) => id !== payload.serverId));
     });
     return () => {
       offChunk();
@@ -906,7 +910,7 @@ export default function App() {
       ...prev,
       [srvId]: [...(prev[srvId] || []).slice(-19), entry],
     }));
-    setCmdRunning(true);
+    setCmdRunningIds((prev) => (prev.includes(srvId) ? prev : [...prev, srvId]));
 
     try {
       const res = await StartQuickCommand(srvId, runId, command);
@@ -917,10 +921,10 @@ export default function App() {
             item.id === runId ? { ...item, running: false, success: false, output: res.message } : item
           ),
         }));
-        setCmdRunning(false);
+        setCmdRunningIds((prev) => prev.filter((id) => id !== srvId));
       }
     } catch (err) {
-      setCmdRunning(false);
+      setCmdRunningIds((prev) => prev.filter((id) => id !== srvId));
       pushToast('error', String(err));
     }
   };
@@ -2681,7 +2685,7 @@ export default function App() {
                     </div>
                     {termMode === 'quick' && (
                       <div className="flex items-center gap-2">
-                        {cmdRunning && (
+                        {cmdRunningHere && (
                           <button
                             onClick={handleStopCommand}
                             className="inline-flex items-center gap-1.5 rounded-lg border border-rose-400/35 bg-rose-500/15 px-3 py-1 text-[11px] font-semibold text-rose-200 transition hover:bg-rose-500/30"
@@ -2763,7 +2767,7 @@ export default function App() {
                       {TERMINAL_PRESETS[termCat].map((preset) => (
                         <button
                           key={preset.cmd}
-                          disabled={cmdRunning}
+                          disabled={cmdRunningHere}
                           title={describeTerminalCommand(preset.cmd, lang)}
                           onClick={() => handleRunCommand(preset.cmd)}
                           className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-slate-900/90 px-2.5 py-1 text-[11px] transition hover:border-cyan-400/40 hover:bg-cyan-500/10 disabled:opacity-50"
@@ -2842,7 +2846,7 @@ export default function App() {
                       placeholder={t.terminalPlaceholder}
                       className="min-w-0 flex-1 rounded-xl border border-white/10 bg-slate-950/90 px-3.5 py-2.5 font-mono text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400/50"
                     />
-                    {cmdRunning ? (
+                    {cmdRunningHere ? (
                       <button
                         type="button"
                         onClick={handleStopCommand}
