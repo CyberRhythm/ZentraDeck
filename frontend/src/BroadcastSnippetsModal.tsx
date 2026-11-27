@@ -194,11 +194,14 @@ export default function BroadcastSnippetsModal({
   };
 
   const openEditSnippet = (sn: main.CommandSnippet) => {
-    const loc = localizeSnippet(sn, language);
+    // Prefill from the STORED values, not the localized display text:
+    // built-ins render through localizeSnippet, and prefilling the localized
+    // pair would silently discard the user's saved custom title/description
+    // the moment they save without retyping them.
     setEditId(sn.id);
-    setSnipTitle(loc.title);
+    setSnipTitle(sn.title);
     setSnipCmd(sn.command);
-    setSnipDesc(loc.description || '');
+    setSnipDesc(sn.description || '');
     setSnipCat(sn.category || 'custom');
     setFormOpen(true);
   };

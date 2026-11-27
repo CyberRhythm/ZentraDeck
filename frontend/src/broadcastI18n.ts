@@ -733,7 +733,13 @@ export function localizeSnippet(
   if (entry) {
     const pair = entry[lang] || entry.en;
     if (pair) {
-      return { title: pair[0], description: pair[1] };
+      // Built-in localization applies only to fields the user has NOT
+      // customized: a stored value that differs from the built-in English
+      // default is a user edit (SaveSnippet persists renames for builtin-*
+      // ids) and must win over the built-in translation.
+      const title = sn.title === entry.en[0] ? pair[0] : sn.title;
+      const description = sn.description === entry.en[1] ? pair[1] : sn.description;
+      return { title, description };
     }
   }
   return { title: sn.title, description: sn.description };
