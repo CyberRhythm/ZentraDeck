@@ -68,6 +68,21 @@ export interface SettingsStrings {
   restoredToast: string;
   deleteBackup: string;
   backupDeleted: string;
+  tabBackup: string;
+  backupExportTitle: string;
+  backupExportDesc: string;
+  exportPasswordLabel: string;
+  exportPasswordConfirmLabel: string;
+  exportBtn: string;
+  exportDone: string;
+  importTitle: string;
+  importDesc: string;
+  importPasswordLabel: string;
+  importBtn: string;
+  importDone: string;
+  passwordMismatch: string;
+  passwordTooShort: string;
+  backupSecurityNote: string;
   close: string;
 }
 
@@ -141,6 +156,21 @@ const EN: SettingsStrings = {
   restoredToast: 'Backup restored atomically',
   deleteBackup: 'Delete snapshot',
   backupDeleted: 'Snapshot deleted',
+  tabBackup: 'Backup & Transfer',
+  backupExportTitle: 'Encrypted Export',
+  backupExportDesc: 'Write your full server inventory — including stored credentials — into a password-protected file you can move to another PC.',
+  exportPasswordLabel: 'Export password',
+  exportPasswordConfirmLabel: 'Confirm password',
+  exportBtn: 'Export inventory…',
+  exportDone: 'Inventory exported to {path}',
+  importTitle: 'Encrypted Import',
+  importDesc: 'Merge a previously exported file back into your inventory. Servers with the same ID are updated; local credentials are kept when the file has none.',
+  importPasswordLabel: 'File password',
+  importBtn: 'Import inventory…',
+  importDone: 'Imported: {a} added, {u} updated',
+  passwordMismatch: 'Passwords do not match',
+  passwordTooShort: 'Password must be at least {n} characters',
+  backupSecurityNote: 'Files are sealed with Argon2id key derivation and AES-256-GCM encryption. Without the password the content cannot be recovered.',
   close: 'Close',
 };
 
@@ -214,6 +244,21 @@ const FA: SettingsStrings = {
   restoredToast: 'نسخه بکاپ با ذخیره اتمیک بازگردانی شد',
   deleteBackup: 'حذف این نسخه',
   backupDeleted: 'نسخه بکاپ حذف شد',
+  tabBackup: 'پشتیبان\u200cگیری و انتقال',
+  backupExportTitle: 'خروجی رمزنگاری\u200cشده',
+  backupExportDesc: 'کل فهرست سرورهای شما — همراه اطلاعات ورود ذخیره\u200cشده — در یک فایل محافظت\u200cشده با رمز عبور ذخیره می\u200cشود تا بتوانید آن را به رایانه دیگری منتقل کنید.',
+  exportPasswordLabel: 'رمز عبور خروجی',
+  exportPasswordConfirmLabel: 'تکرار رمز عبور',
+  exportBtn: 'خروجی گرفتن…',
+  exportDone: 'فهرست سرورها در {path} ذخیره شد',
+  importTitle: 'ورود رمزنگاری\u200cشده',
+  importDesc: 'فایل خروجی قبلی را با فهرست فعلی ادغام کنید. سرورهایی با شناسه یکسان به\u200cروزرسانی می\u200cشوند؛ اگر فایل اطلاعات ورود نداشته باشد، اطلاعات محلی حفظ می\u200cشود.',
+  importPasswordLabel: 'رمز عبور فایل',
+  importBtn: 'ورود فایل…',
+  importDone: 'وارد شد: {a} افزوده، {u} به\u200cروزرسانی',
+  passwordMismatch: 'رمزهای عبور یکسان نیستند',
+  passwordTooShort: 'رمز عبور باید حداقل {n} نویسه باشد',
+  backupSecurityNote: 'فایل\u200cها با استخراج کلید Argon2id و رمزنگاری AES-256-GCM مهروموم می\u200cشوند. بدون رمز عبور، محتوا قابل بازیابی نیست.',
   close: 'بستن',
 };
 
@@ -287,6 +332,21 @@ const ZH: SettingsStrings = {
   restoredToast: '已原子化恢复备份版本',
   deleteBackup: '删除快照',
   backupDeleted: '快照已删除',
+  tabBackup: '备份与迁移',
+  backupExportTitle: '加密导出',
+  backupExportDesc: '将完整的服务器清单（包括已保存的凭据）写入一个受密码保护的文件，方便迁移到其他电脑。',
+  exportPasswordLabel: '导出密码',
+  exportPasswordConfirmLabel: '确认密码',
+  exportBtn: '导出清单…',
+  exportDone: '清单已导出到 {path}',
+  importTitle: '加密导入',
+  importDesc: '将之前导出的文件合并到当前清单。ID 相同的服务器会被更新；若文件中不含凭据，则保留本地凭据。',
+  importPasswordLabel: '文件密码',
+  importBtn: '导入清单…',
+  importDone: '导入完成：新增 {a}，更新 {u}',
+  passwordMismatch: '两次输入的密码不一致',
+  passwordTooShort: '密码至少需要 {n} 个字符',
+  backupSecurityNote: '文件使用 Argon2id 密钥推导与 AES-256-GCM 加密密封。没有密码无法恢复内容。',
   close: '关闭',
 };
 
@@ -360,6 +420,21 @@ const PT: SettingsStrings = {
   restoredToast: 'Backup restaurado atomicamente',
   deleteBackup: 'Excluir snapshot',
   backupDeleted: 'Snapshot excluído',
+  tabBackup: 'Backup e Transferência',
+  backupExportTitle: 'Exportação criptografada',
+  backupExportDesc: 'Grave todo o seu inventário de servidores — incluindo credenciais salvas — em um arquivo protegido por senha para transferir para outro PC.',
+  exportPasswordLabel: 'Senha de exportação',
+  exportPasswordConfirmLabel: 'Confirmar senha',
+  exportBtn: 'Exportar inventário…',
+  exportDone: 'Inventário exportado para {path}',
+  importTitle: 'Importação criptografada',
+  importDesc: 'Mescla um arquivo exportado anteriormente ao seu inventário. Servidores com o mesmo ID são atualizados; credenciais locais são mantidas quando o arquivo não as contém.',
+  importPasswordLabel: 'Senha do arquivo',
+  importBtn: 'Importar inventário…',
+  importDone: 'Importado: {a} adicionados, {u} atualizados',
+  passwordMismatch: 'As senhas não coincidem',
+  passwordTooShort: 'A senha deve ter pelo menos {n} caracteres',
+  backupSecurityNote: 'Os arquivos são selados com derivação de chave Argon2id e criptografia AES-256-GCM. Sem a senha, o conteúdo não pode ser recuperado.',
   close: 'Fechar',
 };
 
@@ -433,6 +508,21 @@ const ES: SettingsStrings = {
   restoredToast: 'Copia restaurada atómicamente',
   deleteBackup: 'Eliminar copia',
   backupDeleted: 'Copia eliminada',
+  tabBackup: 'Copia y transferencia',
+  backupExportTitle: 'Exportación cifrada',
+  backupExportDesc: 'Guarda todo tu inventario de servidores —incluidas las credenciales almacenadas— en un archivo protegido por contraseña para transferirlo a otro PC.',
+  exportPasswordLabel: 'Contraseña de exportación',
+  exportPasswordConfirmLabel: 'Confirmar contraseña',
+  exportBtn: 'Exportar inventario…',
+  exportDone: 'Inventario exportado a {path}',
+  importTitle: 'Importación cifrada',
+  importDesc: 'Fusiona un archivo exportado anteriormente con tu inventario. Los servidores con el mismo ID se actualizan; las credenciales locales se conservan si el archivo no las incluye.',
+  importPasswordLabel: 'Contraseña del archivo',
+  importBtn: 'Importar inventario…',
+  importDone: 'Importado: {a} añadidos, {u} actualizados',
+  passwordMismatch: 'Las contraseñas no coinciden',
+  passwordTooShort: 'La contraseña debe tener al menos {n} caracteres',
+  backupSecurityNote: 'Los archivos se sellan con derivación de clave Argon2id y cifrado AES-256-GCM. Sin la contraseña no se puede recuperar el contenido.',
   close: 'Cerrar',
 };
 
@@ -506,6 +596,21 @@ const DE: SettingsStrings = {
   restoredToast: 'Backup atomar wiederhergestellt',
   deleteBackup: 'Snapshot löschen',
   backupDeleted: 'Snapshot gelöscht',
+  tabBackup: 'Sicherung & Übertragung',
+  backupExportTitle: 'Verschlüsselter Export',
+  backupExportDesc: 'Schreibt Ihr vollständiges Serverinventar — einschließlich gespeicherter Zugangsdaten — in eine passwortgeschützte Datei zur Übertragung auf einen anderen PC.',
+  exportPasswordLabel: 'Export-Passwort',
+  exportPasswordConfirmLabel: 'Passwort bestätigen',
+  exportBtn: 'Inventar exportieren…',
+  exportDone: 'Inventar exportiert nach {path}',
+  importTitle: 'Verschlüsselter Import',
+  importDesc: 'Führt eine zuvor exportierte Datei mit Ihrem Inventar zusammen. Server mit derselben ID werden aktualisiert; lokale Zugangsdaten bleiben erhalten, wenn die Datei keine enthält.',
+  importPasswordLabel: 'Datei-Passwort',
+  importBtn: 'Inventar importieren…',
+  importDone: 'Importiert: {a} hinzugefügt, {u} aktualisiert',
+  passwordMismatch: 'Die Passwörter stimmen nicht überein',
+  passwordTooShort: 'Das Passwort muss mindestens {n} Zeichen lang sein',
+  backupSecurityNote: 'Dateien werden mit Argon2id-Schlüsselableitung und AES-256-GCM-Verschlüsselung versiegelt. Ohne Passwort ist der Inhalt nicht wiederherstellbar.',
   close: 'Schließen',
 };
 
@@ -579,6 +684,21 @@ const FR: SettingsStrings = {
   restoredToast: 'Sauvegarde restaurée atomiquement',
   deleteBackup: 'Supprimer la copie',
   backupDeleted: 'Copie supprimée',
+  tabBackup: 'Sauvegarde et transfert',
+  backupExportTitle: 'Export chiffré',
+  backupExportDesc: 'Écrit tout votre inventaire de serveurs — identifiants enregistrés compris — dans un fichier protégé par mot de passe à transférer sur un autre PC.',
+  exportPasswordLabel: 'Mot de passe d’export',
+  exportPasswordConfirmLabel: 'Confirmer le mot de passe',
+  exportBtn: 'Exporter l’inventaire…',
+  exportDone: 'Inventaire exporté vers {path}',
+  importTitle: 'Import chiffré',
+  importDesc: 'Fusionne un fichier exporté précédemment avec votre inventaire. Les serveurs ayant le même ID sont mis à jour ; les identifiants locaux sont conservés si le fichier n’en contient pas.',
+  importPasswordLabel: 'Mot de passe du fichier',
+  importBtn: 'Importer l’inventaire…',
+  importDone: 'Importé : {a} ajoutés, {u} mis à jour',
+  passwordMismatch: 'Les mots de passe ne correspondent pas',
+  passwordTooShort: 'Le mot de passe doit contenir au moins {n} caractères',
+  backupSecurityNote: 'Les fichiers sont scellés par dérivation de clé Argon2id et chiffrement AES-256-GCM. Sans le mot de passe, le contenu est irrécupérable.',
   close: 'Fermer',
 };
 
@@ -652,6 +772,21 @@ const JA: SettingsStrings = {
   restoredToast: 'バックアップをアトミックに復元しました',
   deleteBackup: 'スナップショットを削除',
   backupDeleted: 'スナップショットを削除しました',
+  tabBackup: 'バックアップと移行',
+  backupExportTitle: '暗号化エクスポート',
+  backupExportDesc: '保存済みの認証情報を含むサーバー構成全体を、パスワードで保護されたファイルに書き出し、別のPCへ移行できます。',
+  exportPasswordLabel: 'エクスポート用パスワード',
+  exportPasswordConfirmLabel: 'パスワードの確認',
+  exportBtn: '構成をエクスポート…',
+  exportDone: '{path} にエクスポートしました',
+  importTitle: '暗号化インポート',
+  importDesc: '以前エクスポートしたファイルを現在の構成に統合します。同じIDのサーバーは更新され、ファイルに認証情報がない場合はローカルの情報が保持されます。',
+  importPasswordLabel: 'ファイルのパスワード',
+  importBtn: '構成をインポート…',
+  importDone: 'インポート完了：追加 {a}、更新 {u}',
+  passwordMismatch: 'パスワードが一致しません',
+  passwordTooShort: 'パスワードは {n} 文字以上にしてください',
+  backupSecurityNote: 'ファイルは Argon2id 鍵導出と AES-256-GCM 暗号で封印されます。パスワードなしでは復元できません。',
   close: '閉じる',
 };
 
@@ -725,6 +860,21 @@ const RU: SettingsStrings = {
   restoredToast: 'Копия атомарно восстановлена',
   deleteBackup: 'Удалить копию',
   backupDeleted: 'Копия удалена',
+  tabBackup: 'Резервная копия и перенос',
+  backupExportTitle: 'Шифрованный экспорт',
+  backupExportDesc: 'Сохраняет весь список серверов — включая сохранённые учётные данные — в защищённый паролем файл для переноса на другой ПК.',
+  exportPasswordLabel: 'Пароль экспорта',
+  exportPasswordConfirmLabel: 'Подтвердите пароль',
+  exportBtn: 'Экспортировать…',
+  exportDone: 'Список серверов экспортирован в {path}',
+  importTitle: 'Шифрованный импорт',
+  importDesc: 'Объединяет ранее экспортированный файл с текущим списком. Серверы с совпадающим ID обновляются; локальные учётные данные сохраняются, если в файле их нет.',
+  importPasswordLabel: 'Пароль файла',
+  importBtn: 'Импортировать…',
+  importDone: 'Импортировано: добавлено {a}, обновлено {u}',
+  passwordMismatch: 'Пароли не совпадают',
+  passwordTooShort: 'Пароль должен содержать минимум {n} символов',
+  backupSecurityNote: 'Файлы защищены деривацией ключа Argon2id и шифрованием AES-256-GCM. Без пароля содержимое невозможно восстановить.',
   close: 'Закрыть',
 };
 
@@ -798,6 +948,21 @@ const KO: SettingsStrings = {
   restoredToast: '백업이 원자적으로 복원되었습니다',
   deleteBackup: '스냅샷 삭제',
   backupDeleted: '스냅샷이 삭제되었습니다',
+  tabBackup: '백업 및 전송',
+  backupExportTitle: '암호화 내보내기',
+  backupExportDesc: '저장된 자격 증명을 포함한 전체 서버 목록을 비밀번호로 보호되는 파일로 저장하여 다른 PC로 옮길 수 있습니다.',
+  exportPasswordLabel: '내보내기 비밀번호',
+  exportPasswordConfirmLabel: '비밀번호 확인',
+  exportBtn: '목록 내보내기…',
+  exportDone: '{path}에 내보냈습니다',
+  importTitle: '암호화 가져오기',
+  importDesc: '이전에 내보낸 파일을 현재 목록에 병합합니다. 같은 ID의 서버는 업데이트되며, 파일에 자격 증명이 없으면 로컬 값을 유지합니다.',
+  importPasswordLabel: '파일 비밀번호',
+  importBtn: '목록 가져오기…',
+  importDone: '가져오기 완료: {a}개 추가, {u}개 업데이트',
+  passwordMismatch: '비밀번호가 일치하지 않습니다',
+  passwordTooShort: '비밀번호는 {n}자 이상이어야 합니다',
+  backupSecurityNote: '파일은 Argon2id 키 유도와 AES-256-GCM 암호화로 봉인됩니다. 비밀번호 없이는 복구할 수 없습니다.',
   close: '닫기',
 };
 
@@ -871,6 +1036,21 @@ const ID: SettingsStrings = {
   restoredToast: 'Backup dipulihkan secara atomik',
   deleteBackup: 'Hapus salinan',
   backupDeleted: 'Salinan dihapus',
+  tabBackup: 'Cadangan & Transfer',
+  backupExportTitle: 'Ekspor terenkripsi',
+  backupExportDesc: 'Tulis seluruh inventaris server Anda — termasuk kredensial tersimpan — ke file terlindungi kata sandi untuk dipindahkan ke PC lain.',
+  exportPasswordLabel: 'Kata sandi ekspor',
+  exportPasswordConfirmLabel: 'Konfirmasi kata sandi',
+  exportBtn: 'Ekspor inventaris…',
+  exportDone: 'Inventaris diekspor ke {path}',
+  importTitle: 'Impor terenkripsi',
+  importDesc: 'Gabungkan file yang diekspor sebelumnya ke inventaris Anda. Server dengan ID sama diperbarui; kredensial lokal dipertahankan bila file tidak memilikinya.',
+  importPasswordLabel: 'Kata sandi file',
+  importBtn: 'Impor inventaris…',
+  importDone: 'Diimpor: {a} ditambahkan, {u} diperbarui',
+  passwordMismatch: 'Kata sandi tidak cocok',
+  passwordTooShort: 'Kata sandi minimal {n} karakter',
+  backupSecurityNote: 'File disegel dengan derivasi kunci Argon2id dan enkripsi AES-256-GCM. Tanpa kata sandi, isi tidak dapat dipulihkan.',
   close: 'Tutup',
 };
 

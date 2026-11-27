@@ -10,6 +10,7 @@ import {
   HardDrive,
   Heart,
   Info,
+  Lock,
   Power,
   RotateCcw,
   Settings,
@@ -28,13 +29,15 @@ import {
   SendTestNotification,
   SFTPClearBackups,
   SFTPGetBackupStats,
+  ExportServersEncrypted,
+  ImportServersEncrypted,
 } from '../wailsjs/go/main/App';
 import { main } from '../wailsjs/go/models';
 import { BrowserOpenURL } from '../wailsjs/runtime/runtime';
 import { LANGUAGES } from './i18n';
 import { formatLocalBytes, getSettingsStrings } from './settingsI18n';
 
-export type SettingsTab = 'general' | 'sftp' | 'alerts' | 'about';
+export type SettingsTab = 'general' | 'sftp' | 'alerts' | 'backup' | 'about';
 
 interface SettingsModalProps {
   open: boolean;
@@ -45,6 +48,7 @@ interface SettingsModalProps {
   proLabel: string;
   onClose: () => void;
   onUpdateSettings: (patch: Partial<main.AppSettings>) => void;
+  onServersImported: () => void;
   onOpenSupport: () => void;
   onToast: (type: 'success' | 'error', message: string) => void;
 }
@@ -61,6 +65,7 @@ export default function SettingsModal({
   proLabel,
   onClose,
   onUpdateSettings,
+  onServersImported,
   onOpenSupport,
   onToast,
 }: SettingsModalProps) {
@@ -196,9 +201,65 @@ export default function SettingsModal({
     }
   };
 
+  // --- Encrypted inventory export / import ---
+  const [exportPw, setExportPw] = useState('');
+  const [exportPwConfirm, setExportPwConfirm] = useState('');
+  const [importPw, setImportPw] = useState('');
+  const [backupBusy, setBackupBusy] = useState<'export' | 'import' | null>(null);
+
+  const handleExportInventory = useCallback(async () => {
+    if (exportPw.length < 8) {
+      onToast('error', ts.passwordTooShort.replace('{n}', '8'));
+      return;
+    }
+    if (exportPw !== exportPwConfirm) {
+      onToast('error', ts.passwordMismatch);
+      return;
+    }
+    setBackupBusy('export');
+    try {
+      const path = await ExportServersEncrypted(exportPw);
+      if (path) {
+        onToast('success', ts.exportDone.replace('{path}', path));
+        setExportPw('');
+        setExportPwConfirm('');
+      }
+    } catch (err) {
+      onToast('error', String(err));
+    } finally {
+      setBackupBusy(null);
+    }
+  }, [exportPw, exportPwConfirm, onToast, ts]);
+
+  const handleImportInventory = useCallback(async () => {
+    if (importPw.length < 8) {
+      onToast('error', ts.passwordTooShort.replace('{n}', '8'));
+      return;
+    }
+    setBackupBusy('import');
+    try {
+      const summary = await ImportServersEncrypted(importPw);
+      if (summary && !summary.cancelled) {
+        onToast(
+          'success',
+          ts.importDone
+            .replace('{a}', String(summary.added))
+            .replace('{u}', String(summary.updated))
+        );
+        setImportPw('');
+        onServersImported();
+      }
+    } catch (err) {
+      onToast('error', String(err));
+    } finally {
+      setBackupBusy(null);
+    }
+  }, [importPw, onToast, ts, onServersImported]);
+
   const tabs: { id: SettingsTab; label: string; icon: ReactNode }[] = [
     { id: 'general', label: ts.tabGeneral, icon: <Sliders className="h-4 w-4" /> },
     { id: 'sftp', label: ts.tabSftp, icon: <FolderArchive className="h-4 w-4" /> },
+    { id: 'backup', label: ts.tabBackup, icon: <Lock className="h-4 w-4" /> },
     { id: 'alerts', label: ts.tabAlerts, icon: <Bell className="h-4 w-4" /> },
     { id: 'about', label: ts.tabAbout, icon: <Info className="h-4 w-4" /> },
   ];
@@ -596,6 +657,83 @@ export default function SettingsModal({
                 <p className="rounded-xl border border-white/10 bg-slate-950/40 p-3 text-[11px] leading-relaxed text-slate-400">
                   {ts.perServerHint}
                 </p>
+              </>
+            )}
+
+            {/* BACKUP & TRANSFER TAB */}
+            {activeTab === 'backup' && (
+              <>
+                {/* Encrypted export */}
+                <div className="space-y-3 rounded-xl border border-white/10 bg-white/[0.03] p-3.5">
+                  <div>
+                    <div className="font-semibold text-white">{ts.backupExportTitle}</div>
+                    <div className="text-[11px] text-slate-400">{ts.backupExportDesc}</div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <input
+                      type="password"
+                      value={exportPw}
+                      onChange={(e) => setExportPw(e.target.value)}
+                      placeholder={ts.exportPasswordLabel}
+                      disabled={backupBusy !== null}
+                      className="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400/50 disabled:opacity-50"
+                    />
+                    <input
+                      type="password"
+                      value={exportPwConfirm}
+                      onChange={(e) => setExportPwConfirm(e.target.value)}
+                      placeholder={ts.exportPasswordConfirmLabel}
+                      disabled={backupBusy !== null}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleExportInventory();
+                      }}
+                      className="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400/50 disabled:opacity-50"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleExportInventory}
+                    disabled={backupBusy !== null}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-400/30 bg-cyan-500/15 px-3 py-1.5 text-[11px] font-semibold text-cyan-200 transition hover:bg-cyan-500/25 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <FolderOpen className="h-3.5 w-3.5" />
+                    {backupBusy === 'export' ? '…' : ts.exportBtn}
+                  </button>
+                </div>
+
+                {/* Encrypted import */}
+                <div className="space-y-3 rounded-xl border border-white/10 bg-white/[0.03] p-3.5">
+                  <div>
+                    <div className="font-semibold text-white">{ts.importTitle}</div>
+                    <div className="text-[11px] text-slate-400">{ts.importDesc}</div>
+                  </div>
+                  <input
+                    type="password"
+                    value={importPw}
+                    onChange={(e) => setImportPw(e.target.value)}
+                    placeholder={ts.importPasswordLabel}
+                    disabled={backupBusy !== null}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleImportInventory();
+                    }}
+                    className="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400/50 disabled:opacity-50"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleImportInventory}
+                    disabled={backupBusy !== null}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-400/30 bg-emerald-500/15 px-3 py-1.5 text-[11px] font-semibold text-emerald-200 transition hover:bg-emerald-500/25 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <FolderOpen className="h-3.5 w-3.5" />
+                    {backupBusy === 'import' ? '…' : ts.importBtn}
+                  </button>
+                </div>
+
+                {/* Security note */}
+                <div className="flex items-start gap-2 rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-[11px] text-emerald-200">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                  <span>{ts.backupSecurityNote}</span>
+                </div>
               </>
             )}
 

@@ -431,6 +431,22 @@ export namespace main {
 		    return a;
 		}
 	}
+	export class ImportSummary {
+	    added: number;
+	    updated: number;
+	    cancelled: boolean;
+
+	    static createFrom(source: any = {}) {
+	        return new ImportSummary(source);
+	    }
+
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.added = source["added"];
+	        this.updated = source["updated"];
+	        this.cancelled = source["cancelled"];
+	    }
+	}
 	export class OpenPort {
 	    proto: string;
 	    address: string;

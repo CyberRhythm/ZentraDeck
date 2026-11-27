@@ -46,6 +46,10 @@ export function EvaluateServerAlerts(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['EvaluateServerAlerts'](arg1, arg2, arg3, arg4);
 }
 
+export function ExportServersEncrypted(arg1) {
+  return window['go']['main']['App']['ExportServersEncrypted'](arg1);
+}
+
 export function GetDemoServers() {
   return window['go']['main']['App']['GetDemoServers']();
 }
@@ -88,6 +92,10 @@ export function GetSettings() {
 
 export function GetSnippets() {
   return window['go']['main']['App']['GetSnippets']();
+}
+
+export function ImportServersEncrypted(arg1) {
+  return window['go']['main']['App']['ImportServersEncrypted'](arg1);
 }
 
 export function ImportSSHConfig() {

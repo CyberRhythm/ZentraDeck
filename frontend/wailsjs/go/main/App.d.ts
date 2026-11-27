@@ -24,6 +24,8 @@ export function EnableSysstat(arg1:string):Promise<main.ActionResult>;
 
 export function EvaluateServerAlerts(arg1:string,arg2:string,arg3:boolean,arg4:main.ServerMetrics):Promise<Array<main.TriggeredAlert>>;
 
+export function ExportServersEncrypted(arg1:string):Promise<string>;
+
 export function GetDemoServers():Promise<Array<main.ServerConfig>>;
 
 export function GetDockerLogs(arg1:string,arg2:string):Promise<string>;
@@ -45,6 +47,8 @@ export function GetServiceLogs(arg1:string,arg2:string):Promise<string>;
 export function GetSettings():Promise<main.AppSettings>;
 
 export function GetSnippets():Promise<Array<main.CommandSnippet>>;
+
+export function ImportServersEncrypted(arg1:string):Promise<main.ImportSummary>;
 
 export function ImportSSHConfig():Promise<number>;
 

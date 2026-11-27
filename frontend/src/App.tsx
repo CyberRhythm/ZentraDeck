@@ -3642,6 +3642,20 @@ export default function App() {
         proLabel={t.proMode}
         onClose={() => setSettingsModalOpen(false)}
         onUpdateSettings={(patch) => updateSettings(patch)}
+        onServersImported={async () => {
+          try {
+            const updated = await GetServers();
+            setServers(updated || []);
+            if (updated && updated.length > 0) {
+              setDemoMode(false);
+              setSelectedId((prev) =>
+                updated.some((s) => s.id === prev) ? prev : updated[0].id
+              );
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }}
         onOpenSupport={() => setSupportModalOpen(true)}
         onToast={(type, message) => pushToast(type, message)}
       /></Suspense>)}
