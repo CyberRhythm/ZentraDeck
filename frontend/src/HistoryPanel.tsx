@@ -119,17 +119,30 @@ export default function HistoryPanel({
   const [preflight, setPreflight] = useState<main.SysstatPreflightResult | null>(null);
   const [checkingPreflight, setCheckingPreflight] = useState(false);
 
-  const loadHistory = useCallback(async (targetRange: RangeKey) => {
-    setLoading(true);
-    try {
-      const data = await GetServerHistory(serverId, targetRange);
-      setReport(data);
-    } catch (err) {
-      onToastRef.current('error', String(err));
-    } finally {
-      setLoading(false);
-    }
-  }, [serverId]);
+  // Monotonic request id: a slower earlier request (e.g. 24h on a cold SSH
+  // connection) can resolve after a faster later one (30d on the warm
+  // connection); only the newest response may touch the state.
+  const loadSeqRef = useRef(0);
+
+  const loadHistory = useCallback(
+    async (targetRange: RangeKey) => {
+      const seq = ++loadSeqRef.current;
+      setLoading(true);
+      try {
+        const data = await GetServerHistory(serverId, targetRange);
+        if (seq !== loadSeqRef.current) return;
+        setReport(data);
+      } catch (err) {
+        if (seq !== loadSeqRef.current) return;
+        onToastRef.current('error', String(err));
+      } finally {
+        if (seq === loadSeqRef.current) {
+          setLoading(false);
+        }
+      }
+    },
+    [serverId]
+  );
 
   useEffect(() => {
     loadHistory(range);

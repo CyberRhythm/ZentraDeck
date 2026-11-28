@@ -114,33 +114,56 @@ export default function SecurityCronPanel({ serverId, language, onToast }: Secur
   const [commentInput, setCommentInput] = useState('');
   const [savingCron, setSavingCron] = useState(false);
 
+  // Monotonic request ids per loader: a slower request for the previous
+  // server can resolve after switching servers (the first request pays the
+  // SSH connection setup, the re-run reuses it and often finishes first);
+  // only the newest response may touch the state.
+  const auditSeqRef = useRef(0);
+  const tasksSeqRef = useRef(0);
+
   const loadAudit = useCallback(async () => {
+    const seq = ++auditSeqRef.current;
     setAuditLoading(true);
     try {
       const res = await GetSecurityAudit(serverId);
+      if (seq !== auditSeqRef.current) return;
       setAudit(res);
     } catch (err) {
+      if (seq !== auditSeqRef.current) return;
       onToastRef.current('error', String(err));
     } finally {
-      setAuditLoading(false);
+      if (seq === auditSeqRef.current) {
+        setAuditLoading(false);
+      }
     }
   }, [serverId]);
 
   const loadTasks = useCallback(async () => {
+    const seq = ++tasksSeqRef.current;
     setTasksLoading(true);
     try {
       const res = await GetScheduledTasks(serverId);
+      if (seq !== tasksSeqRef.current) return;
       setTasks(res);
     } catch (err) {
+      if (seq !== tasksSeqRef.current) return;
       onToastRef.current('error', String(err));
     } finally {
-      setTasksLoading(false);
+      if (seq === tasksSeqRef.current) {
+        setTasksLoading(false);
+      }
     }
   }, [serverId]);
 
   useEffect(() => {
+    tasksSeqRef.current++;
     setAudit(null);
     setTasks(null);
+    // Reset the loading flags too: an in-flight request for the previous
+    // server no longer writes them (stale responses are dropped above), and
+    // the cron loader below only runs when !tasksLoading.
+    setAuditLoading(false);
+    setTasksLoading(false);
     setFormOpen(false);
     loadAudit();
   }, [serverId, loadAudit]);
